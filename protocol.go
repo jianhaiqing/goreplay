@@ -66,6 +66,17 @@ func payloadMeta(payload []byte) [][]byte {
 	return bytes.Split(payload[:headerSize], []byte{' '})
 }
 
+func payloadMetaWithBody(payload []byte) (meta, body []byte) {
+	var i int
+	if i = bytes.IndexByte(payload, '\n'); i > 0 && len(payload) > i+1 {
+		meta = payload[:i+1]
+		body = payload[i+1:]
+		return
+	}
+	// we assume the message did not have meta data
+	return nil, payload
+}
+
 func payloadID(payload []byte) (id []byte) {
 	meta := payloadMeta(payload)
 
